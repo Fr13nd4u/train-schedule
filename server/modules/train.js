@@ -21,7 +21,7 @@ const trainSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  duration: {
+  distance: {
     type: Number,
     required: true
   },

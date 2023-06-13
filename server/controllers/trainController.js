@@ -20,7 +20,7 @@ const createTrain = tryCatch(async (req, res) => {
     departureTime,
     arrivalStation,
     arrivalTime,
-    duration,
+    distance,
     stops
   } = req.body
 
@@ -30,14 +30,14 @@ const createTrain = tryCatch(async (req, res) => {
     departureTime,
     arrivalStation,
     arrivalTime,
-    duration,
+    distance,
     stops
   })
 
   res.status(200).json({ train })
 })
 
-const updateTrain = tryCatch(async (req, res, next) => {
+const updateTrain = tryCatch(async (req, res) => {
   const trainId = req.params.id
 
   const {
@@ -46,7 +46,7 @@ const updateTrain = tryCatch(async (req, res, next) => {
     departureTime,
     arrivalStation,
     arrivalTime,
-    duration,
+    distance,
     stops
   } = req.body
 
@@ -56,7 +56,7 @@ const updateTrain = tryCatch(async (req, res, next) => {
     departureTime,
     arrivalStation,
     arrivalTime,
-    duration,
+    distance,
     stops
   })
 
@@ -69,7 +69,7 @@ const removeTrain = tryCatch(async (req, res, next) => {
   const trainId = req.params.id
 
   await Train.deleteOne({ _id: trainId })
-  res.status(200).json({ success: 'Record deleted' })
+  res.status(200).json({ _id: trainId })
 })
 
 module.exports = {

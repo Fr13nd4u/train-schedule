@@ -1,23 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import TrainService from "../../services/TrainService";
-
-interface IStop {
-  station: string;
-  arrivalTime: string;
-  departureTime: string;
-  _id: string;
-}
-
-interface ITrain {
-  _id: string;
-  trainName: string;
-  departureStation: string;
-  departureTime: string;
-  arrivalStation: string;
-  arrivalTime: string;
-  duration: number;
-  stops: IStop[];
-}
+import { ITrain } from "../../types";
 
 interface IState {
   trains: ITrain[];
@@ -40,7 +23,7 @@ export const createTrain = createAsyncThunk(
     departureTime,
     arrivalStation,
     arrivalTime,
-    duration,
+    distance,
     stops
   }: ITrain) => {
     const res = await TrainService.create({
@@ -49,7 +32,7 @@ export const createTrain = createAsyncThunk(
       departureTime,
       arrivalStation,
       arrivalTime,
-      duration,
+      distance,
       stops
       });
     return res.data;
@@ -61,7 +44,7 @@ export const fetchTrains = createAsyncThunk(
   "trains/fetch",
   async () => {
     const res = await TrainService.getAll();
-    return res.data;
+    return res.data.trains;
   }
 );
 
@@ -70,7 +53,7 @@ export const updateTrain = createAsyncThunk(
   "trains/update",
   async ({ id, data }: { id: string; data: ITrain }) => {
     const res = await TrainService.update(id, data);
-    return res.data;
+    return res.data.train;
   }
 );
 
@@ -79,7 +62,7 @@ export const deleteTrain = createAsyncThunk(
   "trains/delete",
   async (id: string ) => {
     const res = await TrainService.remove(id);
-    return res.data;
+    return res.data
   }
 );
 
@@ -94,7 +77,7 @@ const trainSlice = createSlice({
     })
     builder.addCase(createTrain.fulfilled, (state, action: PayloadAction<ITrain>) => {
       state.loading = false;
-      state.trains = [action.payload, ...state.trains]
+      state.trains = [ ...state.trains, action.payload]
       state.error = ''
     })
     builder.addCase(createTrain.rejected, (state) => {
@@ -124,6 +107,7 @@ const trainSlice = createSlice({
     builder.addCase(updateTrain.fulfilled, (state, action: PayloadAction<ITrain>) => {
       state.loading = false
       const index = state.trains.findIndex((p) => p._id === action.payload._id)
+      console.log('action.payload: ', action.payload);
       state.trains[index] = action.payload
       state.error = ''
     })
@@ -136,8 +120,9 @@ const trainSlice = createSlice({
     builder.addCase(deleteTrain.pending, (state) => {
       state.loading = true;
     })
-    builder.addCase(deleteTrain.fulfilled, (state) => {
-      state.loading = false
+    builder.addCase(deleteTrain.fulfilled, (state, action: PayloadAction<ITrain>) => {
+      state.loading = false;
+      state.trains = state.trains.filter((train) => train._id !== action.payload._id);
     })
     builder.addCase(deleteTrain.rejected, (state) => {
       state.loading = false;
