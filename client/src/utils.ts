@@ -11,3 +11,10 @@ export const formatTimeToDate =(timestamp: string): string => {
 
   return date.toLocaleString('en-US', options);
 }
+
+export const sortOptions = [
+  { value: 'trainName', label: 'Train Name' },
+  { value: 'departureTime', label: 'Departure Time' },
+  { value: 'arrivalTime', label: 'Arrival Time' },
+  { value: 'distance', label: 'Distance' },
+];

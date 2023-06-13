@@ -28,7 +28,7 @@ export const ScheduleBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const getTrains = () => {
-    dispatch(fetchTrains());
+    dispatch(fetchTrains({}));
   };
 
   React.useLayoutEffect(() => {
@@ -40,8 +40,6 @@ export const ScheduleBoard: React.FC = () => {
     setModalActive(false);
     getTrains();
   };
-
-  console.log(trains);
 
   if (loading) {
     return <h2 style={{ marginTop: 120 }}>Loading...</h2>;

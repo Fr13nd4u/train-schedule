@@ -42,8 +42,8 @@ export const createTrain = createAsyncThunk(
 // get
 export const fetchTrains = createAsyncThunk(
   "trains/fetch",
-  async () => {
-    const res = await TrainService.getAll();
+  async ({ search = '', sort = '' }: { search?: string; sort?: string }) => {
+    const res = await TrainService.getAll(search, sort);
     return res.data.trains;
   }
 );
@@ -107,7 +107,6 @@ const trainSlice = createSlice({
     builder.addCase(updateTrain.fulfilled, (state, action: PayloadAction<ITrain>) => {
       state.loading = false
       const index = state.trains.findIndex((p) => p._id === action.payload._id)
-      console.log('action.payload: ', action.payload);
       state.trains[index] = action.payload
       state.error = ''
     })

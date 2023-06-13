@@ -2,7 +2,35 @@ const Train = require('../modules/train')
 const { tryCatch } = require('../utils/tryCatch')
 
 const fetchTrains = tryCatch(async (req, res) => {
-  const trains = await Train.find()
+  const { search, sortBy } = req.query
+
+  let query = Train.find()
+
+  // search
+  if (search) {
+    const searchRegex = new RegExp(search, 'i')
+    query = query.or([
+      { trainName: searchRegex },
+      { departureStation: searchRegex },
+      { arrivalStation: searchRegex }
+    ])
+  }
+
+  // sort
+  if (sortBy) {
+    const sortOptions = {
+      trainName: 'trainName',
+      departureTime: 'departureTime',
+      arrivalTime: 'arrivalTime',
+      distance: 'distance'
+    }
+
+    const sortField = sortOptions[sortBy] || 'trainName'
+    query = query.sort(sortField)
+  }
+
+  const trains = await query.exec()
+
   res.json({ trains })
 })
 

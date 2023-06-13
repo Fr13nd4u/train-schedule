@@ -1,7 +1,23 @@
 import api from '../api';
 
-const getAll = (): any => {
-  return api.get("/train");
+const getAll = (search = '', sortBy = ''): any => {
+  let url = "/train";
+  
+  if (search || sortBy) {
+    const queryParams = [];
+    
+    if (search) {
+      queryParams.push(`search=${search}`);
+    }
+    
+    if (sortBy) {
+      queryParams.push(`sortBy=${sortBy}`);
+    }
+    
+    url += `?${queryParams.join("&")}`;
+  }
+  
+  return api.get(url);
 };
 
 const get = (id: string) => {
