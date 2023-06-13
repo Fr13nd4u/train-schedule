@@ -46,7 +46,7 @@ export const ScheduleBoard: React.FC = () => {
   }
 
   if (error) {
-    return <h2 style={{ marginTop: 120 }}>Something went wronge!</h2>;
+    return <h2 style={{ marginTop: 120 }}>Something went wrong!</h2>;
   }
 
   return (

@@ -1,21 +1,25 @@
 import React from "react";
 import styled from "styled-components";
-import { sortOptions } from "../utils";
 import { useDispatch } from "react-redux";
 import { fetchTrains } from "../redux/slices/trains";
 import { AppDispatch } from "../redux/store";
 
+import { sortOptions } from "../utils";
+import { useDebounce } from "../hooks/useDebounce";
+
 export const Search: React.FC = () => {
+  const [searchValue, setSearchValue] = React.useState("");
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchKeyword = e.target.value;
-    if (searchKeyword !== "") {
-      dispatch(fetchTrains({ search: searchKeyword }));
+  const debouceSearch = useDebounce(searchValue, 300);
+
+  React.useEffect(() => {
+    if (debouceSearch || searchValue.length < 0) {
+      dispatch(fetchTrains({ search: debouceSearch }));
     } else {
       dispatch(fetchTrains({}));
     }
-  };
+  }, [debouceSearch]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sortBy = e.target.value;
@@ -28,7 +32,7 @@ export const Search: React.FC = () => {
       <input
         type="text"
         placeholder="Search trains"
-        onChange={handleSearchChange}
+        onChange={(e) => setSearchValue(e.target.value)}
       />
       <select onChange={handleSortChange}>
         <option value="">All</option>
