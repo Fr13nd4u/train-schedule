@@ -19,7 +19,7 @@ app.use(cors())
 connectToDb()
 
 // routing
-app.use('/train', routes)
+app.use('/api/v1/train', routes)
 app.use(errorHandler)
 
 // start our server
